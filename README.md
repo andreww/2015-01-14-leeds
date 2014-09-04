@@ -1,4 +1,4 @@
-SWC bootcamp for first edition of NERC ATSC: Beyond the code
+SWC bootcamp for second edition of NERC ATSC: Beyond the code
 ============================================================
 
 Web pages for a workshop is funded by NERC as part of the
