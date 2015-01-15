@@ -1,3 +1,8 @@
+---
+layout: lesson
+root: ../..
+---
+
 # Getting the Right Answer
 
 Our previous lessons have introduced the basic tools of programming:
@@ -78,7 +83,7 @@ but checks that its input is correctly formatted and that its result makes sense
 
 
 	def normalize_rectangle(rect):
-	    #What precondition could we set up here? Hint: how many coordinates we must 	pass as the arguments to the fuction?
+	    #What precondition could we set up here? Hint: how many coordinates do we need?
     	# assert...
     
 	    x0, y0, x1, y1 = rect
@@ -89,10 +94,10 @@ but checks that its input is correctly formatted and that its result makes sense
 	    dy = y1 - y0
 	    if dx > dy:
     	    scaled = float(dx) / dy
-        	upper_x, upper_y = 1.0, scaled
+    	    upper_x, upper_y = 1.0, scaled
 	    else:
     	    scaled = float(dx) / dy
-        	upper_x, upper_y = scaled, 1.0
+    	    upper_x, upper_y = scaled, 1.0
 
 	    #Postconditions    
 	    assert 0 < upper_x <= 1.0, 'Calculated upper X coordinate invalid'
@@ -104,28 +109,25 @@ but checks that its input is correctly formatted and that its result makes sense
 
 The preconditions we set should catch invalid inputs:
 
-```python
-print normalize_rectangle( (0.0, 1.0, 2.0) ) # missing the fourth coordinate
-```
 
-```python
-print normalize_rectangle( (4.0, 2.0, 1.0, 5.0) ) # X axis inverted
-```
+	print normalize_rectangle( (0.0, 1.0, 2.0) ) # missing the fourth coordinate
+	print normalize_rectangle( (4.0, 2.0, 1.0, 5.0) ) # X axis inverted
+
 
 The post-conditions help us catch bugs by telling us when our calculations cannot have been correct.
 For example,
 if we normalize a rectangle that is taller than it is wide everything seems OK:
 
-```python
-print normalize_rectangle( (0.0, 0.0, 1.0, 5.0) )
-```
+
+	print normalize_rectangle( (0.0, 0.0, 1.0, 5.0) )
+
 
 but if we normalize one that's wider than it is tall,
 the assertion is triggered:
 
-```python
-print normalize_rectangle( (0.0, 0.0, 5.0, 1.0) )
-```
+
+	print normalize_rectangle( (0.0, 0.0, 5.0, 1.0) )
+
 
 Re-reading our function,
 we realize that line 10 should divide `dy` by `dx` rather than `dx` by `dy`.
@@ -171,16 +173,16 @@ that this bit is tricky.
     and for each one,
     give an example of input that will make that assertion fail.
     
-    ```
-    def running(values):
-        assert len(values) > 0
-        result = [values[0]]
-        for v in values[1:]:
-            assert result[-1] >= 0
-            result.append(result[-1] + v)
-        assert result[-1] >= result[0]
-        return result
-    ```
+    
+    	def running(values):
+    		assert len(values) > 0
+    		result = [values[0]]
+    		for v in values[1:]:
+        		assert result[-1] >= 0
+        		result.append(result[-1] + v)
+    		assert result[-1] >= result[0]
+    		return result
+    
 
 ## Exceptions
 
@@ -196,14 +198,14 @@ For example,
 here's a small piece of code that tries to read parameters and a grid from two separate files,
 and reports an error if either goes wrong:
 
-```python
-try:
-    params = read_params(param_file)
-    grid = read_grid(grid_file)
-except:
-    log.error('Failed to read input file(s)')
-    sys.exit(ERROR)
-```
+
+	try:
+    	params = read_params(param_file)
+    	grid = read_grid(grid_file)
+	except:
+    	log.error('Failed to read input file(s)')
+    	sys.exit(ERROR)
+
 
 We join the normal case and the error-handling code using the keywords `try` and `except`.
 These work together like `if` and `else`:
@@ -218,24 +220,21 @@ For example,
 trying to open a nonexistent file triggers a type of exception called an `IOError`,
 while an out-of-bounds index to a list triggers an `IndexError`:
 
-```python
-open('nonexistent-file.txt', 'r')
-```
 
-```python
-values = [0, 1, 2]
-print values[999]
-```
+	open('nonexistent-file.txt', 'r')
+	values = [0, 1, 2]
+	print values[999]
+
 
 We can use `try` and `except` to deal with these errors ourselves
 if we don't want the program simply to fall over:
 
-```python
-try:
-    reader = open('nonexistent-file.txt', 'r')
-except IOError:
-    print 'Whoops!'
-```
+
+	try:
+    	reader = open('nonexistent-file.txt', 'r')
+	except IOError:
+    	print 'Whoops!'
+
 
 When Python executes this code,
 it runs the statement inside the `try`.
@@ -255,17 +254,17 @@ We can also handle several different kinds of errors afterward.
 For example,
 here's some code to calculate the entropy at each point in a grid:
 
-```python
-try:
-    params = read_params(param_file)
-    grid = read_grid(grid_file)
-    entropy = lee_entropy(params, grid)
-    write_entropy(entropy_file, entropy)
-except IOError:
-    report_error_and_exit('IO error')
-except ArithmeticError:
-    report_error_and_exit('Arithmetic error')
-```
+
+	try:
+		params = read_params(param_file)
+		grid = read_grid(grid_file)
+		entropy = lee_entropy(params, grid)
+		write_entropy(entropy_file, entropy)
+	except IOError:
+		report_error_and_exit('IO error')
+	except ArithmeticError:
+		report_error_and_exit('Arithmetic error')
+
 
 Python tries to run the four functions inside the `try` as normal.
 If an error occurs in any of them,
@@ -286,17 +285,17 @@ which file caused the problem.
 We can do better if we capture and hang on to the object that Python creates
 to record information about the error:
 
-```python
-try:
-    params = read_params(param_file)
-    grid = read_grid(grid_file)
-    entropy = lee_entropy(params, grid)
-    write_entropy(entropy_file, entropy)
-except IOError as err:
-    report_error_and_exit('Cannot read/write' + err.filename)
-except ArithmeticError as err:
-    report_error_and_exit(err.message)
-```
+
+	try:
+		params = read_params(param_file)
+		grid = read_grid(grid_file)
+		entropy = lee_entropy(params, grid)
+		write_entropy(entropy_file, entropy)
+	except IOError as err:
+		report_error_and_exit('Cannot read/write' + err.filename)
+	except ArithmeticError as err:
+		report_error_and_exit(err.message)
+
 
 If something goes wrong in the `try`,
 Python creates an exception object,
@@ -318,22 +317,22 @@ For example,
 if this code can't read the grid file that the user has asked for,
 it creates a default grid instead:
 
-```python
-try:
-    grid = read_grid(grid_file)
-except IOError:
-    grid = default_grid()
-```
+
+	try:
+    	grid = read_grid(grid_file)
+	except IOError:
+    	grid = default_grid()
+
 
 Other programmers would explicitly test for the grid file,
 and use `if` and `else` for control flow:
 
-```python
-if file_exists(grid_file):
-    grid = read_grid(grid_file)
-else:
-    grid = default_grid()
-```
+
+	if file_exists(grid_file):
+    	grid = read_grid(grid_file)
+	else:
+    	grid = default_grid()
+
 
 It's mostly a matter of taste,
 but we prefer the second style.
@@ -353,17 +352,17 @@ Exceptions can actually be thrown a long way:
 they don't have to be handled immediately.
 Take another look at this code:
 
-```python
-try:
-    params = read_params(param_file)
-    grid = read_grid(grid_file)
-    entropy = lee_entropy(params, grid)
-    write_entropy(entropy_file, entropy)
-except IOError as err:
-    report_error_and_exit('Cannot read/write' + err.filename)
-except ArithmeticError as err:
-    report_error_and_exit(err.message)
-```
+	
+	try:
+    	params = read_params(param_file)
+	    grid = read_grid(grid_file)
+	    entropy = lee_entropy(params, grid)
+	    write_entropy(entropy_file, entropy)
+	except IOError as err:
+    	report_error_and_exit('Cannot read/write' + err.filename)
+	except ArithmeticError as err:
+    	report_error_and_exit(err.message)
+
 
 The four lines in the `try` block are all function calls.
 They might catch and handle exceptions themselves,
@@ -397,17 +396,16 @@ Here,
 for example,
 is a function that reads a grid and checks its consistency:
 
-```python
-def read_grid(grid_file):
-    '''Read grid, checking consistency.'''
 
-    data = read_raw_data(grid_file)
-    if not grid_consistent(data):
-        raise Exception('Inconsistent grid: ' + grid_file)
-    result = normalize_grid(data)
+	def read_grid(grid_file):
+    	'''Read grid, checking consistency.'''
+    	
+    	data = read_raw_data(grid_file)
+    	if not grid_consistent(data):
+        	raise Exception('Inconsistent grid: ' + grid_file)
+        result = normalize_grid(data)
+    	return result
 
-    return result
-```
 
 The `raise` statement creates a new exception with a meaningful error message.
 Since `read_grid` itself doesn't contain a `try`/`except` block,
@@ -422,14 +420,14 @@ which is outside the scope of these lessons.
 
 ### Challenges
 
-1.  Modify the program below so that it prints three lines of output.
-    ```
+Modify the program below so that it prints three lines of output.
+
     try:
         for number in [-1, 0, 1]:
             print 1.0/number
     except ZeroDivisionError:
         print 'whoops'
-    ```
+
 
 ## The Limits to Testing
 
@@ -452,41 +450,41 @@ To see why,
 consider a function that checks whether a character strings contains only the letters 'A', 'C', 'G', and 'T'.
 These four tests clearly aren't sufficient:
 
-```python
-assert is_all_bases('A')
-assert is_all_bases('C')
-assert is_all_bases('G')
-assert is_all_bases('T')
-```
+
+	assert is_all_bases('A')
+	assert is_all_bases('C')
+	assert is_all_bases('G')
+	assert is_all_bases('T')
+
 
 because this version of `is_all_bases` passes them:
 
-```python
-def is_all_bases(bases):
-    return True
-```
+
+	def is_all_bases(bases):
+    	return True
+
 
 Adding these tests isn't enough:
 
-```python
-assert not is_all_bases('X')
-assert not is_all_bases('Y')
-assert not is_all_bases('Z')
-```
+
+	assert not is_all_bases('X')
+	assert not is_all_bases('Y')
+	assert not is_all_bases('Z')
+
 
 because this version still passes:
 
-```python
-def is_all_bases(bases):
-    return bases[0] in 'ACGT'
-```
+
+	def is_all_bases(bases):
+    	return bases[0] in 'ACGT'
+
 
 We can add yet more tests:
 
-```python
-assert is_all_bases('ACGCGA')
-assert not is_all_bases('CGAZ')
-```
+
+	assert is_all_bases('ACGCGA')
+	assert not is_all_bases('CGAZ')
+
 
 but no matter how many we have,
 we can always write a function that passes them,
@@ -547,23 +545,23 @@ Here,
 we call the function three times with different arguments,
 checking that the right value is returned each time.
 
-```python
-from rectangle import rectangle_area
 
-assert rectangle_area([0, 0, 1, 1]) == 1.0
-assert rectangle_area([1, 1, 4, 4]) == 9.0
-assert rectangle_area([0, 1, 4, 7]) == 24.0
-```
+	from rectangle import rectangle_area
+
+	assert rectangle_area([0, 0, 1, 1]) == 1.0
+	assert rectangle_area([1, 1, 4, 4]) == 9.0
+	assert rectangle_area([0, 1, 4, 7]) == 24.0
+
 
 This result is used,
 in the sense that we know something's wrong,
 but look closely at what happens if we run the tests in a different order:
 
-```python
-assert rectangle_area([0, 1, 4, 7]) == 24.0
-assert rectangle_area([1, 1, 4, 4]) == 9.0
-assert rectangle_area([0, 0, 1, 1]) == 1.0
-```
+
+	assert rectangle_area([0, 1, 4, 7]) == 24.0
+	assert rectangle_area([1, 1, 4, 4]) == 9.0
+	assert rectangle_area([0, 0, 1, 1]) == 1.0
+
 
 Python halts at the first failed assertion,
 so the second and third tests aren't run at all.
@@ -578,16 +576,16 @@ we'd like to know how many passed or failed.
 Here's a different approach.
 First, let's put each test in a function with a meaningful name:
 
-```python
-def test_unit_square():
-    assert rectangle_area([0, 0, 1, 1]) == 1.0
 
-def test_large_square():
-    assert rectangle_area([1, 1, 4, 4]) == 9.0
+	def test_unit_square():
+		assert rectangle_area([0, 0, 1, 1]) == 1.0
 
-def test_actual_rectangle():
-    assert rectangle_area([0, 1, 4, 7]) == 24.0
-```
+	def test_large_square():
+		assert rectangle_area([1, 1, 4, 4]) == 9.0
+
+	def test_actual_rectangle():
+		assert rectangle_area([0, 1, 4, 7]) == 24.0
+
 
 Next, let's save this code in a python script (in the same folder as the `rectangle.py` file); name the script `test_rectangle.py`.  Remember to import the `rectangle_area` function! We can now use a test framework for Python called `nose`.
 
@@ -604,7 +602,6 @@ and reports how many passed, failed, or were broken.
 To use `nose`, we write test functions, as we've been doing, with the prefix `test_` and put these in files, likewise prefixed by `test_`. The prefixes `Test-`, `Test_` and `test-` can also be used.
 
 To run `nose` for our tests from command line we need to run:
-
 
     $ nosetests test_rectangle.py
 
@@ -649,10 +646,10 @@ it can help us design our software.
 To see how,
 consider this test case for our rectangle area function:
 
-```python
-def test_inverted_rectangle():
-    assert rectangle_area([1, 5, 5, 2]) == -12.0
-```
+
+	def test_inverted_rectangle():
+		assert rectangle_area([1, 5, 5, 2]) == -12.0
+
 
 Is that test correct?
 I.e.,
@@ -660,16 +657,16 @@ are rectangles with `x1<x0` or `y1<y0` legal,
 and do they have negative area?
 Or should the test be:
 
-```python
-def test_inverted_rectangle():
-    try:
-        rectangle_area([1, 5, 5, 2])
-        assert False, 'Function did not raise exception for invalid rectangle'
-    except ValueError:
-        pass # rectangle_area failed with the expected kind of exception
-    except Exception:
-        assert False, 'Function did not raise correct kind of exception for invalid rectangle'
-```
+
+	def test_inverted_rectangle():
+		try:
+        	rectangle_area([1, 5, 5, 2])
+        	assert False, 'Function did not raise exception for invalid rectangle'
+        except ValueError:
+        	pass # rectangle_area failed with the expected kind of exception
+	    except Exception:
+	    	assert False, 'Function did not raise correct kind of exception for invalid rectangle'
+
 
 The logic in this second version may take a moment to work out,
 but the idea is straightforward:
@@ -678,10 +675,10 @@ if it's given a rectangle whose upper edge is below or to the left of its lower 
 
 Here's another test case that can help us design our software:
 
-```python
-def test_zero_width():
-    assert rectangle_area([2, 1, 2, 8]) == 0
-```
+
+	def test_zero_width():
+    	assert rectangle_area([2, 1, 2, 8]) == 0
+
 
 We might decide that rectangles with negative areas aren't allowed,
 but what about rectangles with zero area,
@@ -728,9 +725,9 @@ trying it a few times helps you learn how to design functions and programs that 
 
 ### Challenges
 
-1.  Write a function called `something` that passes the following unit tests:
+Write a function called `something` that passes the following unit tests:
 
-    ```
+
     def test_empty():
         assert something([]) == []
     
@@ -742,4 +739,4 @@ trying it a few times helps you learn how to design functions and programs that 
     
     def test_three_values():
         assert something(['a', 'b', 'c']) == [('a', 'b'), ('a', 'c'), ('b', 'c')]
-    ```
+
